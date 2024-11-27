@@ -9,7 +9,7 @@ namespace WebService.Models.Entities;
 /// contains message related metadata
 /// </summary>
 [Table("ChatRoom")]
-public class ChatRoom
+public class ChatRoomEntity
 {
 	/// <summary>
 	/// The ID for the chat room (Primary Key)

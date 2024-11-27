@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebService.Models.Entities;
 
-public class Session
+public class SessionEntity
 {
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,7 +13,7 @@ public class Session
 	[ForeignKey("ChatRoom")]
 	[Column("ChatRoomId")]
 	public Guid ChatRoomId { get; set; }
-	public virtual ChatRoom ChatRoom { get; set; } = null!;
+	public virtual ChatRoomEntity ChatRoom { get; set; } = null!;
 
 	[Column("StartTime")]
 	[Required]
