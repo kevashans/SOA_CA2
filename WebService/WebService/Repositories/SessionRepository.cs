@@ -10,6 +10,11 @@ public class SessionRepository : ISessionRepository
 		throw new NotImplementedException();
 	}
 
+	public Task AddSessionAsync(SessionEntity session)
+	{
+		throw new NotImplementedException();
+	}
+
 	public Task DeleteSessionAsync(int id)
 	{
 		throw new NotImplementedException();
@@ -20,7 +25,17 @@ public class SessionRepository : ISessionRepository
 		throw new NotImplementedException();
 	}
 
+	public Task<IEnumerable<SessionEntity>> GetAllSessionAsync()
+	{
+		throw new NotImplementedException();
+	}
+
 	public Task<SessionEntity> GetByIdAsync(int id)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task<SessionEntity> GetSessionByIdAsync(int id)
 	{
 		throw new NotImplementedException();
 	}
@@ -31,6 +46,11 @@ public class SessionRepository : ISessionRepository
 	}
 
 	public Task UpdateAsync(SessionEntity session)
+	{
+		throw new NotImplementedException();
+	}
+
+	public void UpdateSession(SessionEntity session)
 	{
 		throw new NotImplementedException();
 	}
