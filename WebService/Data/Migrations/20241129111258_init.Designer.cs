@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129094643_init")]
+    [Migration("20241129111258_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -166,6 +166,12 @@ namespace Data.Migrations
                     b.Property<Guid>("ChatRoomId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ChatRoomId");
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Context");
 
                     b.Property<DateTime>("EndTime")
                         .HasMaxLength(100)

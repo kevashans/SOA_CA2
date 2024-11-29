@@ -164,6 +164,12 @@ namespace Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ChatRoomId");
 
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Context");
+
                     b.Property<DateTime>("EndTime")
                         .HasMaxLength(100)
                         .HasColumnType("datetime2")

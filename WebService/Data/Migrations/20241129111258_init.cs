@@ -204,7 +204,8 @@ namespace Data.Migrations
                     SessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ChatRoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", maxLength: 100, nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", maxLength: 100, nullable: false)
+                    EndTime = table.Column<DateTime>(type: "datetime2", maxLength: 100, nullable: false),
+                    Context = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {

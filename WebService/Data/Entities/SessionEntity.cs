@@ -24,4 +24,9 @@ public class SessionEntity
 	[Required]
 	[MaxLength(100)]
 	public DateTime EndTime { get; set; }
+
+	[Column("Context")]
+	[Required]
+	[MaxLength(100)]
+	public string Context { get; set; } = null!;
 }
