@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
-namespace WebService.Controllers;
+namespace API.Controllers;
 
 public class ChatRoomController : ControllerBase
 {

@@ -2,16 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Data.Auth;
 using Data.Entities;
-using Domain.Entities;
 
 namespace Data;
 
 public class ApplicationDbContext : IdentityDbContext<User>
 {
 
-	public DbSet<ChatRoom> ChatRooms { get; set; }
-	public DbSet<Message> Messages { get; set; }
-	public DbSet<Session> Sessions { get; set; }
+	public DbSet<ChatRoomEntity> ChatRooms { get; set; }
+	public DbSet<MessageEntity> Messages { get; set; }
+	public DbSet<SessionEntity> Sessions { get; set; }
 
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
 	{ 

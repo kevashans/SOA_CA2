@@ -1,4 +1,5 @@
 ﻿using API.Extensions;
+using Data.Auth;
 using Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,11 +20,12 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+	//app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapIdentityApi<User>();
 
-app.MapControllers();
 app.Run();

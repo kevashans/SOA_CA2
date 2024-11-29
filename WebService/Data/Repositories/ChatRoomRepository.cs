@@ -18,7 +18,7 @@ public class ChatRoomRepository : IChatRoomRepository
 
 	public async Task AddChatRoomAsync(ChatRoom chatRoom)
 	{
-		await _context.ChatRooms.AddAsync(chatRoom);
+		throw new NotImplementedException();
 	}
 
 	public async Task DeleteChatRoomAsync(int id)
@@ -31,12 +31,13 @@ public class ChatRoomRepository : IChatRoomRepository
 
 	public async Task<IEnumerable<ChatRoom>> GetAllChatRoomAsync()
 	{
-		return await _context.ChatRooms.ToListAsync();
+		throw new NotImplementedException();
+
 	}
 
 	public async Task<ChatRoom?> GetChatRoomByIdAsync(int id)
 	{
-		return await _context.ChatRooms.FindAsync(id) ?? null;
+		throw new NotImplementedException();
 	}
 
 	public async Task SaveChangesAsync()
@@ -46,7 +47,7 @@ public class ChatRoomRepository : IChatRoomRepository
 
 	public void UpdateChatRoom(ChatRoom chatRoom)
 	{
-		 _context.ChatRooms.Update(chatRoom);
+		throw new NotImplementedException();
 	}
 
 	private ChatRoomEntity MapToDataEntity(ChatRoom chatRoom)
