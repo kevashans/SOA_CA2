@@ -11,4 +11,5 @@ public interface IChatRoomRepository
 	Task DeleteChatRoomAsync(int id);
 	Task SaveChangesAsync();
 	Task SaveAsync(ChatRoom chatRoom);
+	Task<IEnumerable<ChatRoom>> GetChatRoomsByUserIdAsync(string userId);
 }

@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebService.Repositories;
+namespace Data.Repositories;
 
 public class ChatRoomRepository : IChatRoomRepository
 {
@@ -45,22 +45,31 @@ public class ChatRoomRepository : IChatRoomRepository
 		await _context.SaveChangesAsync();
 	}
 
-	//public void UpdateChatRoom(ChatRoom chatRoom)
-	//{
-	//	//var existingEntity = _context.ChatRooms.FirstOrDefault(cr => cr.ChatRoomId == chatRoom.ChatRoomId);
+	public void UpdateChatRoom(ChatRoom chatRoom)
+	{
+		//var existingEntity = _context.ChatRooms.FirstOrDefault(cr => cr.ChatRoomId == chatRoom.ChatRoomId);
 
-	//	//if (existingEntity == null)
-	//	//	throw new KeyNotFoundException($"ChatRoom with ID {chatRoom.ChatRoomId} not found.");
+		//if (existingEntity == null)
+		//	throw new KeyNotFoundException($"ChatRoom with ID {chatRoom.ChatRoomId} not found.");
 
-	//	//existingEntity.Name = chatRoom.Name ?? existingEntity.Name;
-	//	//existingEntity.ChatRoomType = chatRoom.ChatRoomType ?? existingEntity.ChatRoomType;
-	//	//existingEntity.UserId = chatRoom.UserId;
-	//	// Attach the detached entity
-	//	var chatRoomEntity = MapToDataEntity(chatRoom);
+		//existingEntity.Name = chatRoom.Name ?? existingEntity.Name;
+		//existingEntity.ChatRoomType = chatRoom.ChatRoomType ?? existingEntity.ChatRoomType;
+		//existingEntity.UserId = chatRoom.UserId;
+		// Attach the detached entity
+		var chatRoomEntity = MapToDataEntity(chatRoom);
 
-	//	// Update the entire entity
-	//	_context.ChatRooms.Update(chatRoomEntity);
-	//}
+		// Update the entire entity
+		_context.ChatRooms.Update(chatRoomEntity);
+	}
+
+	public async Task<IEnumerable<ChatRoom>> GetChatRoomsByUserIdAsync(string userId)
+	{
+		var chatRoomEntities = await _context.ChatRooms
+			.Where(cr => cr.UserId == userId)
+			.ToListAsync();
+
+		return chatRoomEntities.Select(MapToDomainEntity);
+	}
 
 	public async Task SaveAsync(ChatRoom chatRoom)
 	{
@@ -82,7 +91,6 @@ public class ChatRoomRepository : IChatRoomRepository
 
 		await _context.SaveChangesAsync();
 	}
-
 
 	private ChatRoomEntity MapToDataEntity(ChatRoom chatRoom)
 	{

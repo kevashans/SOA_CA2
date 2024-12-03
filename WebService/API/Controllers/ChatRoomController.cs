@@ -64,9 +64,23 @@ public class ChatRoomController : ControllerBase
 	/// <summary>
 	/// Retrieves chat rooms which is created by a specific user
 	/// </summary>
-	[HttpGet("{userId}")]
-	public IActionResult GetChatRoomByUserId(string userId)
+	[HttpGet("me"), Authorize]
+	public async Task<IActionResult> GetChatRoomByUserId()
 	{
-		throw new NotImplementedException("GetChatRoomByUserId method is not implemented.");
+		string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+		if (userId == null)
+			return Unauthorized();
+
+		try
+		{
+			var updatedChatRoom = await _chatRoomService.GetChatRoomByUserId(userId);
+
+			return Ok(new {ChatRooms = updatedChatRoom });
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(new { Error = ex.Message });
+		}
 	}
 }

@@ -31,6 +31,16 @@ public class ChatRoomService : IChatRoomService
 		return chatRoom;
 	}
 
+	public async Task<IEnumerable<ChatRoom>> GetChatRoomByUserId(string userId)
+	{
+		if (string.IsNullOrWhiteSpace(userId))
+			throw new ArgumentException("User ID cannot be null or empty.", nameof(userId));
+
+		var chatRooms = await _repository.GetChatRoomsByUserIdAsync(userId);
+
+		return chatRooms;
+	}
+
 	public async Task<ChatRoom> UpdateChatRoom(UpdateChatRoomRequest updateChatRoomRequest, string userId)
 	{
 		if (!Guid.TryParse(updateChatRoomRequest.ChatRoomId, out Guid chatRoomGuid))

@@ -1,10 +1,9 @@
 ﻿using Domain.Factories.Interfaces;
 using Domain.Factories;
 using Domain.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Services;
 using Services.Interfaces;
-using WebService.Repositories;
+using Data.Repositories;
 namespace API.Extensions;
 
 public static class ApplicationServiceExtension
@@ -13,8 +12,8 @@ public static class ApplicationServiceExtension
 	{
 		services.AddScoped<IChatRoomService, ChatRoomService>();
 		services.AddScoped<IChatRoomService, ChatRoomService>();
-		services.AddScoped<IChatRoomFactory, ChatRoomFactory>(); // Factory
-		services.AddScoped<IChatRoomRepository, ChatRoomRepository>(); // Repository
+		services.AddScoped<IChatRoomFactory, ChatRoomFactory>(); 
+		services.AddScoped<IChatRoomRepository, ChatRoomRepository>(); 
 		services.AddControllers();
 		return services;
 	}
