@@ -83,4 +83,24 @@ public class ChatRoomController : ControllerBase
 			return BadRequest(new { Error = ex.Message });
 		}
 	}
+
+	[HttpDelete("{id}"), Authorize]
+	public async Task<IActionResult> DeleteChatRoomById(string id)
+	{
+		string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+		if (userId == null)
+			return Unauthorized();
+
+		try
+		{
+			await _chatRoomService.DeleteChatRoomById(id,userId);
+
+			return Ok(new { Message = $"ChatRoom with ID {id} has been deleted" });
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(new { Error = ex.Message });
+		}
+	}
 }

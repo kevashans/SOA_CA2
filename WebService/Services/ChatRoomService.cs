@@ -59,4 +59,22 @@ public class ChatRoomService : IChatRoomService
 		return existingChatRoom;
 	}
 
+	public async Task DeleteChatRoomById(string chatRoomId, string userId)
+	{
+		if (!Guid.TryParse(chatRoomId, out Guid chatRoomGuid))
+			throw new ArgumentException("Invalid ChatRoom ID format.");
+
+		var chatRoom = await _repository.GetChatRoomByIdAsync(chatRoomGuid);
+
+		if (chatRoom == null)
+			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found.");
+
+		if (chatRoom.UserId != userId)
+			throw new UnauthorizedAccessException("You are not authorized to delete this chat room.");
+
+
+		await _repository.DeleteChatRoomAsync(chatRoomGuid);
+		await _repository.SaveChangesAsync();
+	}
+
 }

@@ -10,4 +10,6 @@ public interface IChatRoomService
 
 	Task<IEnumerable<ChatRoom>> GetChatRoomByUserId(string userId);
 
+	Task DeleteChatRoomById(string chatRoomId, string userId);
+
 }

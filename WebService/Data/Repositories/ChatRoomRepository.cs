@@ -20,7 +20,7 @@ public class ChatRoomRepository : IChatRoomRepository
 		await _context.AddAsync(MapToDataEntity(chatRoom));
 	}
 
-	public async Task DeleteChatRoomAsync(int id)
+	public async Task DeleteChatRoomAsync(Guid id)
 	{
 		var chatRoom = await _context.ChatRooms.FindAsync(id);
 
