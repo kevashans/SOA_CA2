@@ -1,8 +1,11 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
+using Domain.Factories.Interfaces;
+using Domain.Strategies.Enums;
 
 namespace Domain.Factories;
 
-public class ChatRoomFactory
+public class ChatRoomFactory : IChatRoomFactory
 {
 	/// <summary>
 	/// Create chat strategy based on chat room type
@@ -11,10 +14,15 @@ public class ChatRoomFactory
 	/// <param name="chatRoomType"></param>
 	/// <returns></returns>
 	/// <exception cref="NotImplementedException"></exception>
-	public ChatRoom CreateChatRoom(string name, string chatRoomType)
+	public ChatRoom CreateChatRoom(CreateChatRoomRequest chatroomRequest, string userId)
 	{
-		throw new NotImplementedException();
-		//return new ChatRoom(name, chatRoomType, strategy);
+		if (!Enum.TryParse(typeof(ChatRoomType), chatroomRequest.ChatRoomType, true, out var result) ||!Enum.IsDefined(typeof(ChatRoomType), result))
+		{
+			throw new ArgumentException($"Invalid ChatRoomType: {chatroomRequest.ChatRoomType}");
+		}
+
+		var chatroom = new ChatRoom(userId, chatroomRequest.Name, chatroomRequest.ChatRoomType);
+		return chatroom;
 	}
 }
 

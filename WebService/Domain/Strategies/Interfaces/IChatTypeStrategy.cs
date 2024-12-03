@@ -1,6 +1,6 @@
 ﻿namespace Domain.Strategies.Interfaces;
 
-public interface IChatStrategy
+public interface IChatTypeStrategy
 {
     string Respond(string userMessage);
 }

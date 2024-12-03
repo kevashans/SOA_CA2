@@ -2,6 +2,13 @@
 
 public class ChatRoom
 {
+	public ChatRoom(string userId, string name, string chatRoomType)
+	{
+		UserId = userId;
+		Name = name;
+		ChatRoomType = chatRoomType;
+	}
+
 	/// <summary>
 	/// The unique identifier for the chat room.
 	/// </summary>
@@ -26,8 +33,19 @@ public class ChatRoom
 	/// <summary>
 	/// Business rule method
 	/// </summary>
-	public void BusinessRule()
+	public void ChangeType()
 	{
 		throw new NotImplementedException();
+	}
+
+	public void ChangeName(string newName)
+	{
+		if (string.IsNullOrWhiteSpace(newName))
+			throw new ArgumentException("Chat room name cannot be null or empty.");
+
+		if (newName.Length > 255)
+			throw new ArgumentException("Chat room name cannot exceed 255 characters.");
+
+		Name = newName;
 	}
 }

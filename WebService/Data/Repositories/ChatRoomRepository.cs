@@ -2,8 +2,6 @@
 using Data.Entities;
 using Domain.Entities;
 using Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace WebService.Repositories;
 
@@ -18,7 +16,7 @@ public class ChatRoomRepository : IChatRoomRepository
 
 	public async Task AddChatRoomAsync(ChatRoom chatRoom)
 	{
-		throw new NotImplementedException();
+		await _context.AddAsync(MapToDataEntity(chatRoom));
 	}
 
 	public async Task DeleteChatRoomAsync(int id)
@@ -52,7 +50,7 @@ public class ChatRoomRepository : IChatRoomRepository
 
 	private ChatRoomEntity MapToDataEntity(ChatRoom chatRoom)
 	{
-		throw new NotImplementedException();
+		return new ChatRoomEntity(chatRoom.UserId, chatRoom.Name, chatRoom.ChatRoomType);
 	}
 
 	private ChatRoom MapToDomainEntity(ChatRoom chatRoom)

@@ -12,6 +12,19 @@ namespace Data.Entities;
 public class ChatRoomEntity
 {
 	/// <summary>
+	/// Construtor
+	/// </summary>
+	/// <param name="userId"></param>
+	/// <param name="name"></param>
+	/// <param name="chatRoomType"></param>
+	public ChatRoomEntity(string userId, string name, string chatRoomType)
+	{
+		UserId = userId;
+		Name = name;
+		ChatRoomType = chatRoomType;
+	}
+
+	/// <summary>
 	/// The ID for the chat room (Primary Key)
 	/// </summary>
 	[Key]

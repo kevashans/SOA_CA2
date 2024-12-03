@@ -4,7 +4,7 @@ namespace WebService.Domain.Factories;
 
 public class ChatStrategyFactory
 {
-	public static IChatStrategy GetChatStrategy(string strategyType)
+	public static IChatTypeStrategy GetChatStrategy(string strategyType)
 	{
 		throw new NotImplementedException();
 	}

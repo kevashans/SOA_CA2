@@ -2,7 +2,7 @@
 
 namespace Domain.Strategies;
 
-public class CasualChatStrategy : IChatStrategy
+public class CasualChatTypeStrategy : IChatTypeStrategy
 {
 	/// <summary>
 	/// Return ChatGPT response in a casual context
