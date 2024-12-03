@@ -2,7 +2,7 @@
 using Data.Entities;
 using Domain.Interfaces;
 
-namespace WebService.Repositories;
+namespace Data.Repositories;
 
 public class MessageRepository : IMessageRepository
 {

@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Strategies.Interfaces;
+
 
 namespace Domain.Strategies
 {
-	internal class ProfessionalChatTypeStrategy
+	internal class ProfessionalChatTypeStrategy : IChatTypeStrategy
 	{
+		private readonly IChatResponseGenerator _responseGenerator;
+
+		public ProfessionalChatTypeStrategy(IChatResponseGenerator responseGenerator)
+		{
+			_responseGenerator = responseGenerator;
+		}
+
+		public Task<string> Respond(string userMessage)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -41,19 +41,19 @@ public class ChatRoom
 	/// <summary>
 	/// Business rule method
 	/// </summary>
-	public void ChangeType()
-	{
-		throw new NotImplementedException();
-	}
+	//public void ChangeType()
+	//{
+	//	throw new NotImplementedException();
+	//}
 
-	public void ChangeName(string newName)
-	{
-		if (string.IsNullOrWhiteSpace(newName))
-			throw new ArgumentException("Chat room name cannot be null or empty.");
+	//public void ChangeName(string newName)
+	//{
+	//	if (string.IsNullOrWhiteSpace(newName))
+	//		throw new ArgumentException("Chat room name cannot be null or empty.");
 
-		if (newName.Length > 255)
-			throw new ArgumentException("Chat room name cannot exceed 255 characters.");
+	//	if (newName.Length > 255)
+	//		throw new ArgumentException("Chat room name cannot exceed 255 characters.");
 
-		Name = newName;
-	}
+	//	Name = newName;
+	//}
 }

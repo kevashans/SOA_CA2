@@ -6,6 +6,8 @@ using System.Security.Claims;
 
 namespace API.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class ChatRoomController : ControllerBase
 {
 	private readonly IChatRoomService _chatRoomService;
@@ -76,7 +78,7 @@ public class ChatRoomController : ControllerBase
 		{
 			var updatedChatRoom = await _chatRoomService.GetChatRoomByUserId(userId);
 
-			return Ok(new {ChatRooms = updatedChatRoom });
+			return Ok(new { ChatRooms = updatedChatRoom });
 		}
 		catch (Exception ex)
 		{
@@ -94,7 +96,7 @@ public class ChatRoomController : ControllerBase
 
 		try
 		{
-			await _chatRoomService.DeleteChatRoomById(id,userId);
+			await _chatRoomService.DeleteChatRoomById(id, userId);
 
 			return Ok(new { Message = $"ChatRoom with ID {id} has been deleted" });
 		}

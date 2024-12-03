@@ -2,5 +2,5 @@
 
 public interface IChatTypeStrategy
 {
-    string Respond(string userMessage);
+    Task<string> Respond(string userMessage);
 }

@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 
-namespace WebService.Repositories;
+namespace Data.Repositories;
 
 public class SessionRepository : ISessionRepository
 {
