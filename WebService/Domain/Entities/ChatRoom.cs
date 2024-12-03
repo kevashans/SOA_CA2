@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Common.Enums;
+
+namespace Domain.Entities;
 
 public class ChatRoom
 {
@@ -41,19 +43,17 @@ public class ChatRoom
 	/// <summary>
 	/// Business rule method
 	/// </summary>
-	//public void ChangeType()
-	//{
-	//	throw new NotImplementedException();
-	//}
+	public void ValidateOwnership(string userId)
+	{
+		if (UserId != userId)
+			throw new UnauthorizedAccessException("You are not authorized to modify this chat room.");
+	}
 
-	//public void ChangeName(string newName)
-	//{
-	//	if (string.IsNullOrWhiteSpace(newName))
-	//		throw new ArgumentException("Chat room name cannot be null or empty.");
+	public (Message input, Message output) AddMessage(string prompt, string response)
+	{
+		var input = new Message(ChatRoomId, nameof(MessageType.Input), prompt, DateTime.UtcNow);
+		var output = new Message(ChatRoomId, nameof(MessageType.Output), response, DateTime.UtcNow);
 
-	//	if (newName.Length > 255)
-	//		throw new ArgumentException("Chat room name cannot exceed 255 characters.");
-
-	//	Name = newName;
-	//}
+		return (input, output);
+	}
 }

@@ -28,12 +28,6 @@ public class ChatRoomRepository : IChatRoomRepository
 			_context.ChatRooms.Remove(chatRoom);
 	}
 
-	public async Task<IEnumerable<ChatRoom>> GetAllChatRoomAsync()
-	{
-		throw new NotImplementedException();
-
-	}
-
 	public async Task<ChatRoom?> GetChatRoomByIdAsync(Guid id)
 	{
 		var chatroom = await _context.ChatRooms.FirstOrDefaultAsync(cr => cr.ChatRoomId == id);
@@ -43,23 +37,6 @@ public class ChatRoomRepository : IChatRoomRepository
 	public async Task SaveChangesAsync()
 	{
 		await _context.SaveChangesAsync();
-	}
-
-	public void UpdateChatRoom(ChatRoom chatRoom)
-	{
-		//var existingEntity = _context.ChatRooms.FirstOrDefault(cr => cr.ChatRoomId == chatRoom.ChatRoomId);
-
-		//if (existingEntity == null)
-		//	throw new KeyNotFoundException($"ChatRoom with ID {chatRoom.ChatRoomId} not found.");
-
-		//existingEntity.Name = chatRoom.Name ?? existingEntity.Name;
-		//existingEntity.ChatRoomType = chatRoom.ChatRoomType ?? existingEntity.ChatRoomType;
-		//existingEntity.UserId = chatRoom.UserId;
-		// Attach the detached entity
-		var chatRoomEntity = MapToDataEntity(chatRoom);
-
-		// Update the entire entity
-		_context.ChatRooms.Update(chatRoomEntity);
 	}
 
 	public async Task<IEnumerable<ChatRoom>> GetChatRoomsByUserIdAsync(string userId)
@@ -101,5 +78,4 @@ public class ChatRoomRepository : IChatRoomRepository
 	{
 		return new ChatRoom(chatRoom.ChatRoomId,chatRoom.UserId, chatRoom.Name, chatRoom.ChatRoomType);
 	}
-
 }

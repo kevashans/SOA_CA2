@@ -11,6 +11,7 @@ namespace API.Controllers;
 public class ChatRoomController : ControllerBase
 {
 	private readonly IChatRoomService _chatRoomService;
+
 	public ChatRoomController(IChatRoomService chatRoomService)
 	{
 		_chatRoomService = chatRoomService;
@@ -76,9 +77,9 @@ public class ChatRoomController : ControllerBase
 
 		try
 		{
-			var updatedChatRoom = await _chatRoomService.GetChatRoomByUserId(userId);
+			var chatRooms = await _chatRoomService.GetChatRoomByUserId(userId);
 
-			return Ok(new { ChatRooms = updatedChatRoom });
+			return Ok(new { ChatRooms = chatRooms });
 		}
 		catch (Exception ex)
 		{

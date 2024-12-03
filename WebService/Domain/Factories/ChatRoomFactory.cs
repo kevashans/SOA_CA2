@@ -1,7 +1,7 @@
-﻿using Domain.DTOs;
+﻿using Domain.Common.Enums;
+using Domain.DTOs;
 using Domain.Entities;
 using Domain.Factories.Interfaces;
-using Domain.Strategies.Enums;
 
 namespace Domain.Factories;
 

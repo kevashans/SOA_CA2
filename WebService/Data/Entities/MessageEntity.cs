@@ -7,6 +7,16 @@ namespace Data.Entities;
 /// </summary>
 public class MessageEntity
 {
+	public MessageEntity(Guid messageId, Guid chatRoomId, string messageType, string content, DateTime createdAt)
+	{
+		MessageId = messageId;
+		ChatRoomId = chatRoomId;
+		MessageType = messageType;
+		Content = content;
+		CreatedAt = createdAt;
+	}
+
+
 	/// <summary>
 	/// Id of the generated message (Primary Key)
 	/// </summary>

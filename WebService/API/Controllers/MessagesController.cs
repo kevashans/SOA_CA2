@@ -38,4 +38,24 @@ public class MessagesController : ControllerBase
 			return BadRequest(new { Error = ex.Message });
 		}
 	}
+
+	[HttpGet("{chatRoomId}"), Authorize]
+	public async Task<IActionResult> GetMessages([FromRoute] string chatRoomId)
+	{
+		try
+		{
+			string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+			if (userId == null)
+				return Unauthorized();
+
+			var messages = await _messageService.GetChatroomMessages(chatRoomId, userId);
+
+			return Ok(new { Message = messages });
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(new { Error = ex.Message });
+		}
+	}
 }
