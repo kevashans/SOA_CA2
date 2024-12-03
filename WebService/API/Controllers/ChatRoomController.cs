@@ -40,8 +40,8 @@ public class ChatRoomController : ControllerBase
 	/// <summary>
 	/// Updates an existing chat room
 	/// </summary>
-	[HttpPut("update/{chatRoomId}"), Authorize]
-	public async Task<IActionResult> UpdateChatRoom(string chatRoomId, UpdateChatRoomRequest dto)
+	[HttpPut("update"), Authorize]
+	public async Task<IActionResult> UpdateChatRoom(UpdateChatRoomRequest dto)
 	{
 		string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -50,9 +50,9 @@ public class ChatRoomController : ControllerBase
 
 		try
 		{
-			var updatedChatRoom = await _chatRoomService.UpdateChatRoom(chatRoomId, dto, userId);
+			var updatedChatRoom = await _chatRoomService.UpdateChatRoom(dto, userId);
 
-			return Ok(new { Message = $"Chatroom {chatRoomId} updated.", ChatRoom = updatedChatRoom });
+			return Ok(new { Message = $"Chatroom {dto.ChatRoomId} updated.", ChatRoom = updatedChatRoom });
 		}
 		catch (Exception ex)
 		{
@@ -62,7 +62,7 @@ public class ChatRoomController : ControllerBase
 
 
 	/// <summary>
-	/// Retrieves chat rooms by a specific user
+	/// Retrieves chat rooms which is created by a specific user
 	/// </summary>
 	[HttpGet("{userId}")]
 	public IActionResult GetChatRoomByUserId(string userId)

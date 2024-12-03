@@ -9,6 +9,14 @@ public class ChatRoom
 		ChatRoomType = chatRoomType;
 	}
 
+	public ChatRoom(Guid chatRoomId, string userId, string name, string chatRoomType)
+	{
+		ChatRoomId = chatRoomId;
+		UserId = userId;
+		Name = name;
+		ChatRoomType = chatRoomType;
+	}
+
 	/// <summary>
 	/// The unique identifier for the chat room.
 	/// </summary>

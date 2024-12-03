@@ -19,9 +19,6 @@ public class ChatRoomService : IChatRoomService
 
 	public async Task<ChatRoom> CreateChatRoom(CreateChatRoomRequest chatroomRequest, string userId)
 	{
-		if (chatroomRequest == null)
-			throw new ArgumentNullException(nameof(chatroomRequest));
-
 		if (string.IsNullOrWhiteSpace(userId))
 			throw new ArgumentException("User ID cannot be null or empty.", nameof(userId));
 
@@ -34,10 +31,22 @@ public class ChatRoomService : IChatRoomService
 		return chatRoom;
 	}
 
-	public void DeleteChatRoom() 
+	public async Task<ChatRoom> UpdateChatRoom(UpdateChatRoomRequest updateChatRoomRequest, string userId)
 	{
-	}
+		if (!Guid.TryParse(updateChatRoomRequest.ChatRoomId, out Guid chatRoomGuid))
+			throw new ArgumentException("Invalid ChatRoom ID format.");
 
-	public void UpdateChatRoom() { }
+		var existingChatRoom = await _repository.GetChatRoomByIdAsync(chatRoomGuid);
+
+		if (existingChatRoom == null)
+			throw new KeyNotFoundException($"ChatRoom with ID {updateChatRoomRequest.ChatRoomId} not found.");
+
+		// Apply business rules (e.g., only allow updates to certain fields)
+		existingChatRoom.Name = updateChatRoomRequest.Name ?? existingChatRoom.Name;
+		existingChatRoom.ChatRoomType = updateChatRoomRequest.ChatRoomType ?? existingChatRoom.ChatRoomType;
+
+		await _repository.SaveAsync(existingChatRoom);
+		return existingChatRoom;
+	}
 
 }

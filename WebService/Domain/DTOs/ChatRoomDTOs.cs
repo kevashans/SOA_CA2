@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain.DTOs
 {
 	public class CreateChatRoomRequest
@@ -20,6 +22,7 @@ namespace Domain.DTOs
 		/// <summary>
 		/// ChatRoom identifier
 		/// </summary>
+		[Required]
 		public string ChatRoomId { get; set; } = null!;
 
 		/// <summary>

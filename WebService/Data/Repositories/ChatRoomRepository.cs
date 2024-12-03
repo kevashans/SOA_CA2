@@ -2,6 +2,7 @@
 using Data.Entities;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebService.Repositories;
 
@@ -33,9 +34,10 @@ public class ChatRoomRepository : IChatRoomRepository
 
 	}
 
-	public async Task<ChatRoom?> GetChatRoomByIdAsync(int id)
+	public async Task<ChatRoom?> GetChatRoomByIdAsync(Guid id)
 	{
-		throw new NotImplementedException();
+		var chatroom = await _context.ChatRooms.FirstOrDefaultAsync(cr => cr.ChatRoomId == id);
+		return chatroom is not null ? MapToDomainEntity(chatroom) : null;
 	}
 
 	public async Task SaveChangesAsync()
@@ -43,19 +45,53 @@ public class ChatRoomRepository : IChatRoomRepository
 		await _context.SaveChangesAsync();
 	}
 
-	public void UpdateChatRoom(ChatRoom chatRoom)
+	//public void UpdateChatRoom(ChatRoom chatRoom)
+	//{
+	//	//var existingEntity = _context.ChatRooms.FirstOrDefault(cr => cr.ChatRoomId == chatRoom.ChatRoomId);
+
+	//	//if (existingEntity == null)
+	//	//	throw new KeyNotFoundException($"ChatRoom with ID {chatRoom.ChatRoomId} not found.");
+
+	//	//existingEntity.Name = chatRoom.Name ?? existingEntity.Name;
+	//	//existingEntity.ChatRoomType = chatRoom.ChatRoomType ?? existingEntity.ChatRoomType;
+	//	//existingEntity.UserId = chatRoom.UserId;
+	//	// Attach the detached entity
+	//	var chatRoomEntity = MapToDataEntity(chatRoom);
+
+	//	// Update the entire entity
+	//	_context.ChatRooms.Update(chatRoomEntity);
+	//}
+
+	public async Task SaveAsync(ChatRoom chatRoom)
 	{
-		throw new NotImplementedException();
+		var trackedEntity = _context.ChatRooms.Local.FirstOrDefault(cr => cr.ChatRoomId == chatRoom.ChatRoomId);
+
+		if (trackedEntity != null)
+		{
+			// update tracked entity
+			trackedEntity.Name = chatRoom.Name;
+			trackedEntity.ChatRoomType = chatRoom.ChatRoomType;
+		}
+		else
+		{
+			// attach entity for persistence
+			var entity = MapToDataEntity(chatRoom);
+			_context.ChatRooms.Attach(entity);
+			_context.Entry(entity).State = EntityState.Modified;
+		}
+
+		await _context.SaveChangesAsync();
 	}
+
 
 	private ChatRoomEntity MapToDataEntity(ChatRoom chatRoom)
 	{
-		return new ChatRoomEntity(chatRoom.UserId, chatRoom.Name, chatRoom.ChatRoomType);
+		return new ChatRoomEntity(chatRoom.ChatRoomId,chatRoom.UserId, chatRoom.Name, chatRoom.ChatRoomType);
 	}
 
-	private ChatRoom MapToDomainEntity(ChatRoom chatRoom)
+	private ChatRoom MapToDomainEntity(ChatRoomEntity chatRoom)
 	{
-		throw new NotImplementedException();
+		return new ChatRoom(chatRoom.ChatRoomId,chatRoom.UserId, chatRoom.Name, chatRoom.ChatRoomType);
 	}
 
 }
