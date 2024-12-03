@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Strategies.Interfaces;
 
-namespace Domain.Strategies
+
+namespace Domain.Strategies;
+
+internal class PirateChatTypeStrategy : IChatTypeStrategy
 {
-	internal class PirateChatTypeStrategy
+	private readonly IChatResponseGenerator _responseGenerator;
+
+	public PirateChatTypeStrategy(IChatResponseGenerator responseGenerator)
 	{
+		_responseGenerator = responseGenerator;
+	}
+
+	public Task<string> Respond(string userMessage)
+	{
+		throw new NotImplementedException();
 	}
 }

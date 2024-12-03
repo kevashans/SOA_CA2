@@ -51,7 +51,6 @@ public class ChatRoomService : IChatRoomService
 		if (existingChatRoom == null)
 			throw new KeyNotFoundException($"ChatRoom with ID {updateChatRoomRequest.ChatRoomId} not found.");
 
-		// Apply business rules (e.g., only allow updates to certain fields)
 		existingChatRoom.Name = updateChatRoomRequest.Name ?? existingChatRoom.Name;
 		existingChatRoom.ChatRoomType = updateChatRoomRequest.ChatRoomType ?? existingChatRoom.ChatRoomType;
 
@@ -67,7 +66,7 @@ public class ChatRoomService : IChatRoomService
 		var chatRoom = await _repository.GetChatRoomByIdAsync(chatRoomGuid);
 
 		if (chatRoom == null)
-			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found.");
+			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
 
 		if (chatRoom.UserId != userId)
 			throw new UnauthorizedAccessException("You are not authorized to delete this chat room.");
