@@ -1,18 +1,24 @@
-﻿using Domain.Strategies.Enums;
+﻿using Domain.Factories.Interfaces;
 using Domain.Strategies;
 using Domain.Strategies.Interfaces;
 
-namespace WebService.Domain.Factories;
+namespace Domain.Factories;
 
-public class ChatStrategyFactory
+public class ChatStrategyFactory : IChatStrategyFactory
 {
-	public static IChatTypeStrategy GetChatStrategy(string chatRoomType)
+	private readonly IChatResponseGenerator _responseGenerator;
+
+	public ChatStrategyFactory(IChatResponseGenerator responseGenerator)
+	{
+		_responseGenerator = responseGenerator;
+	}
+	public IChatTypeStrategy GetChatStrategy(string chatRoomType)
 	{
 		return chatRoomType switch
 		{
-			"Casual" => new CasualChatTypeStrategy(),
-			"Pirate" => new PirateChatTypeStrategy(),
-			"Professional" => new ProfessionalChatTypeStrategy(),
+			"Casual" => new CasualChatTypeStrategy(_responseGenerator),
+			"Pirate" => new PirateChatTypeStrategy(_responseGenerator),
+			"Professional" => new ProfessionalChatTypeStrategy(_responseGenerator),
 			_ => throw new ArgumentException($"Unsupported chat room type: {chatRoomType}")
 		};
 	}
