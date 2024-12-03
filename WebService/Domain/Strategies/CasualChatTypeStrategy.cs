@@ -6,6 +6,7 @@ public class CasualChatTypeStrategy : IChatTypeStrategy
 {
 
 	private readonly IChatResponseGenerator _responseGenerator;
+	private readonly string _systemPrompt = "Please answer in a casual format";
 
 	public CasualChatTypeStrategy(IChatResponseGenerator responseGenerator)
 	{
@@ -16,10 +17,8 @@ public class CasualChatTypeStrategy : IChatTypeStrategy
 	/// </summary>
 	/// <param name="userMessage"></param>
 	/// <returns></returns>
-	/// <exception cref="NotImplementedException"></exception>
-	public Task<string> Respond(string userMessage)
+	public async Task<string> Respond(string userMessage)
 	{
-		// responseGenerote.generate
-		throw new NotImplementedException();
+		return await _responseGenerator.GenerateResponseAsync(_systemPrompt,userMessage);
 	}
 }

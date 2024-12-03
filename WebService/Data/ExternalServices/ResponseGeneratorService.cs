@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json.Serialization;
 
 namespace Services;
 
@@ -25,9 +26,9 @@ public class ResponseGeneratorService : IChatResponseGenerator
 			model = "gpt-3.5-turbo",
 			messages = new[]
 			{
-					new { role = "system", content = systemPrompt },
-					new { role = "user", content = userMessage }
-				},
+			new { role = "system", content = systemPrompt },
+			new { role = "user", content = userMessage }
+		},
 			max_tokens = 150
 		};
 
@@ -50,22 +51,47 @@ public class ResponseGeneratorService : IChatResponseGenerator
 		var responseContent = await response.Content.ReadAsStringAsync();
 		var responseJson = JsonSerializer.Deserialize<ChatGptResponse>(responseContent);
 
-		return responseJson?.Choices?.FirstOrDefault()?.Message?.Content ?? "Sorry, I couldn't generate a response.";
+		if (responseJson?.Choices == null || responseJson.Choices.Count == 0)
+		{
+			throw new InvalidOperationException("API returned no choices.");
+		}
+
+		var content = responseJson.Choices.First().Message.Content;
+
+		if (string.IsNullOrWhiteSpace(content))
+		{
+			throw new InvalidOperationException("API returned empty response.");
+		}
+
+		return content;
 	}
 
-	private class ChatGptResponse
+	public class ChatGptResponse
 	{
-		public List<Choice> Choices { get; set; }
+		[JsonPropertyName("choices")]
+		public List<Choice> Choices { get; set; } = new();
 	}
 
-	private class Choice
+	public class Choice
 	{
-		public Message Message { get; set; }
+		[JsonPropertyName("message")]
+		public Message Message { get; set; } = new();
 	}
 
-	private class Message
+	public class Message
 	{
-		public string Role { get; set; }
-		public string Content { get; set; }
+		[JsonPropertyName("content")]
+		public string Content { get; set; } = string.Empty;
+	}
+	public class ImageResponse
+	{
+		[JsonPropertyName("data")]
+		public List<ImageData> Data { get; set; } = new();
+	}
+
+	public class ImageData
+	{
+		[JsonPropertyName("url")]
+		public string Url { get; set; } = string.Empty;
 	}
 }

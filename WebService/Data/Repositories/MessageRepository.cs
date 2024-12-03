@@ -1,14 +1,23 @@
 ﻿using Domain.Entities;
 using Data.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Data.Auth;
 
 namespace Data.Repositories;
 
 public class MessageRepository : IMessageRepository
 {
-	public Task AddMessageAsync(Message chatRoom)
+	private readonly ApplicationDbContext _context;
+
+	public MessageRepository(ApplicationDbContext context)
 	{
-		throw new NotImplementedException();
+		_context = context;
+	}
+
+	public async Task AddMessageAsync(Message message)
+	{
+		await _context.AddAsync(MapToDataEntity(message));
 	}
 
 	public Task DeleteMessageAsync(int id)
@@ -21,14 +30,23 @@ public class MessageRepository : IMessageRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<Message?> GetMessageByIdAsync(int id)
+	public Task<Message?> GetMessageByIdAsync(string id)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task SaveChangesAsync()
+	public async Task<IEnumerable<Message?>> GetMessagesByChatroomId(Guid id)
 	{
-		throw new NotImplementedException();
+		var messages = await _context.Messages
+			.Where(cr => cr.ChatRoomId == id)
+			.ToListAsync();
+
+		return messages.Select(MapToDomainEntity);
+	}
+
+	public async Task SaveChangesAsync()
+	{
+		await _context.SaveChangesAsync();
 	}
 
 	public void UpdateMessage(Message chatRoom)
@@ -36,8 +54,14 @@ public class MessageRepository : IMessageRepository
 		throw new NotImplementedException();
 	}
 
-	private ChatRoomEntity MapToDataEntity(ChatRoom chatRoom)
+	private MessageEntity MapToDataEntity(Message message)
 	{
-		throw new NotImplementedException();
+		return new MessageEntity(message.MessageId, message.ChatRoomId, message.MessageType, message.Content, message.CreatedAt);
 	}
+
+	private Message MapToDomainEntity(MessageEntity message)
+	{
+		return new Message(message.ChatRoomId, message.MessageType, message.Content, message.CreatedAt);
+	}
+
 }

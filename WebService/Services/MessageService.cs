@@ -11,7 +11,6 @@ public class MessageService : IMessageService
 	private readonly IMessageRepository _messageRepository;
 	private readonly IChatRoomRepository _chatroomRepository;
 
-
 	public MessageService(IChatStrategyFactory factory, IMessageRepository messageRepository, IChatRoomRepository chatroomRepository)
 	{
 		_factory = factory;
@@ -26,13 +25,37 @@ public class MessageService : IMessageService
 
 		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid);
 
-		if(chatRoom == null)
+		if (chatRoom == null)
 			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
 
-		if (chatRoom.UserId != userId)
-			throw new UnauthorizedAccessException("You are not authorized to modify this chat room.");
+		chatRoom.ValidateOwnership(userId);
 
+		var chatStrategy = _factory.GetChatStrategy(chatRoom.ChatRoomType);
 
-		throw new NotImplementedException("Not implemented");
+		var response = await chatStrategy.Respond(prompt);
+
+		var (input, output) = chatRoom.AddMessage(prompt, response);
+
+		await _messageRepository.AddMessageAsync(input);
+		await _messageRepository.AddMessageAsync(output);
+		await _messageRepository.SaveChangesAsync();
+
+		return output;
 	}
+
+	public async Task<IEnumerable<Message?>> GetChatroomMessages(string chatRoomId, string userId)
+	{
+		if (!Guid.TryParse(chatRoomId, out Guid chatRoomGuid))
+			throw new ArgumentException("Invalid ChatRoom ID format.");
+
+		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid);
+
+		if (chatRoom == null)
+			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
+
+		chatRoom.ValidateOwnership(userId);
+
+		return await _messageRepository.GetMessagesByChatroomId(chatRoomGuid);
+	}
+
 }
