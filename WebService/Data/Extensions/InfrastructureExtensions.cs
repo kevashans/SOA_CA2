@@ -29,7 +29,6 @@ public static class InfrastructureServiceExtensions
 
 		// Authentication Configuration
 		services.AddAuthentication()
-			.AddCookie(IdentityConstants.ApplicationScheme)
 			.AddBearerToken(IdentityConstants.BearerScheme);
 
 		// Authorization Configuration

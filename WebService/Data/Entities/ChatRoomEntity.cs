@@ -11,6 +11,14 @@ namespace Data.Entities;
 [Table("ChatRoom")]
 public class ChatRoomEntity
 {
+	public ChatRoomEntity(Guid chatRoomId, string userId, string name, string chatRoomType)
+	{
+		ChatRoomId = chatRoomId;
+		UserId = userId;
+		Name = name;
+		ChatRoomType = chatRoomType;
+	}
+
 	/// <summary>
 	/// The ID for the chat room (Primary Key)
 	/// </summary>
