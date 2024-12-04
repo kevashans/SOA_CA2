@@ -6,7 +6,7 @@ public class CasualChatTypeStrategy : IChatTypeStrategy
 {
 
 	private readonly IChatResponseGenerator _responseGenerator;
-	private readonly string _systemPrompt = "Please answer in a casual format";
+	private string _systemPrompt = "Please answer in a casual format";
 
 	public CasualChatTypeStrategy(IChatResponseGenerator responseGenerator)
 	{
@@ -20,5 +20,10 @@ public class CasualChatTypeStrategy : IChatTypeStrategy
 	public async Task<string> Respond(string userMessage)
 	{
 		return await _responseGenerator.GenerateResponseAsync(_systemPrompt,userMessage);
+	}
+
+	public void ProvideContext(string? summary)
+	{
+		_systemPrompt += $" keep in mind the previous chat messages: {summary}";
 	}
 }

@@ -16,7 +16,6 @@ public class MessageEntity
 		CreatedAt = createdAt;
 	}
 
-
 	/// <summary>
 	/// Id of the generated message (Primary Key)
 	/// </summary>
@@ -38,7 +37,6 @@ public class MessageEntity
 	/// </summary>
 	[Column("MessageType")]
 	[Required]
-	[MaxLength(100)]
 	public string MessageType { get; set; } = null!;
 
 	/// <summary>
@@ -46,7 +44,7 @@ public class MessageEntity
 	/// </summary>
 	[Column("Content")]
 	[Required]
-	[MaxLength(100)]
+	[MaxLength(2000)]
 	public string Content { get; set; } = null!;
 
 	/// <summary>
@@ -54,7 +52,6 @@ public class MessageEntity
 	/// </summary>
 	[Column("CreatedAt")]
 	[Required]
-	[MaxLength(100)]
 	public DateTime CreatedAt { get; set; }
 
 }

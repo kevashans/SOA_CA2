@@ -6,7 +6,7 @@ namespace Domain.Strategies;
 internal class PirateChatTypeStrategy : IChatTypeStrategy
 {
 	private readonly IChatResponseGenerator _responseGenerator;
-	private readonly string _systemPrompt = "You are a pirate.";
+	private  string _systemPrompt = "You are a pirate.";
 
 	public PirateChatTypeStrategy(IChatResponseGenerator responseGenerator)
 	{
@@ -16,5 +16,10 @@ internal class PirateChatTypeStrategy : IChatTypeStrategy
 	public async Task<string> Respond(string userMessage)
 	{
 		return await _responseGenerator.GenerateResponseAsync(_systemPrompt, userMessage);
+	}
+
+	public void ProvideContext(string? summary)
+	{
+		_systemPrompt += $" keep in mind the previous chat messages: {summary}";
 	}
 }

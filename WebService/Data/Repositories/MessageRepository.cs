@@ -2,10 +2,8 @@
 using Data.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Data.Auth;
 
 namespace Data.Repositories;
-
 public class MessageRepository : IMessageRepository
 {
 	private readonly ApplicationDbContext _context;
@@ -20,19 +18,29 @@ public class MessageRepository : IMessageRepository
 		await _context.AddAsync(MapToDataEntity(message));
 	}
 
-	public Task DeleteMessageAsync(int id)
+	public async Task DeleteMessageAsync(Guid id)
 	{
-		throw new NotImplementedException();
+		var message = await _context.Messages.FindAsync(id);
+
+		if (message != null)
+			_context.Messages.Remove(message);
 	}
 
-	public Task<IEnumerable<Message>> GetAllMessageAsync()
+	public async Task<Message?> GetMessageByIdAsync(Guid id)
 	{
-		throw new NotImplementedException();
+		var message = await _context.Messages.FirstOrDefaultAsync(m => m.MessageId == id);
+		return message is not null ? MapToDomainEntity(message) : null;
 	}
 
-	public Task<Message?> GetMessageByIdAsync(string id)
+	public async Task<IEnumerable<Message>> GetLastMessagesAsync(Guid chatRoomId, int count)
 	{
-		throw new NotImplementedException();
+		var messages = await _context.Messages
+			.Where(m => m.ChatRoomId == chatRoomId)
+			.OrderByDescending(m => m.CreatedAt)
+			.Take(count)
+			.ToListAsync();
+
+		return messages.Select(MapToDomainEntity);
 	}
 
 	public async Task<IEnumerable<Message?>> GetMessagesByChatroomId(Guid id)
@@ -49,9 +57,24 @@ public class MessageRepository : IMessageRepository
 		await _context.SaveChangesAsync();
 	}
 
-	public void UpdateMessage(Message chatRoom)
+	public async Task UpdateMessage(Message message)
 	{
-		throw new NotImplementedException();
+		var trackedEntity = _context.Messages.Local.FirstOrDefault(cr => cr.MessageId == message.MessageId);
+
+		if (trackedEntity != null)
+		{
+			// update tracked entity
+			trackedEntity.Content = message.Content;
+		}
+		else
+		{
+			// attach entity for persistence
+			var entity = MapToDataEntity(message);
+			_context.Messages.Attach(entity);
+			_context.Entry(entity).State = EntityState.Modified;
+		}
+
+		await _context.SaveChangesAsync();
 	}
 
 	private MessageEntity MapToDataEntity(Message message)
@@ -61,7 +84,6 @@ public class MessageRepository : IMessageRepository
 
 	private Message MapToDomainEntity(MessageEntity message)
 	{
-		return new Message(message.ChatRoomId, message.MessageType, message.Content, message.CreatedAt);
+		return new Message(message.MessageId, message.ChatRoomId, message.MessageType, message.Content, message.CreatedAt);
 	}
-
 }
