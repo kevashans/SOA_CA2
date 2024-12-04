@@ -13,12 +13,14 @@ public static class ApplicationServiceExtension
 	{
 		services.AddScoped<IChatRoomService, ChatRoomService>();
 		services.AddScoped<IMessageService, MessageService>();
+		services.AddScoped<ISessionManagementService, SessionManagementService>();
 
 		services.AddScoped<IChatRoomFactory, ChatRoomFactory>();
 		services.AddScoped<IChatStrategyFactory, ChatStrategyFactory>();
 
 		services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
 		services.AddScoped<IMessageRepository, MessageRepository>();
+		services.AddScoped<ISessionRepository, SessionRepository>();
 
 		services.AddHttpClient<IChatResponseGenerator, ResponseGeneratorService>();
 
