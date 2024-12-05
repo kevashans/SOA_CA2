@@ -14,11 +14,11 @@ public class ChatStrategyFactory : IChatStrategyFactory
 	}
 	public IChatTypeStrategy GetChatStrategy(string chatRoomType)
 	{
-		return chatRoomType switch
+		return chatRoomType.ToLower() switch
 		{
-			"Casual" => new CasualChatTypeStrategy(_responseGenerator),
-			"Pirate" => new PirateChatTypeStrategy(_responseGenerator),
-			"Professional" => new ProfessionalChatTypeStrategy(_responseGenerator),
+			"casual" => new CasualChatTypeStrategy(_responseGenerator),
+			"pirate" => new PirateChatTypeStrategy(_responseGenerator),
+			"professional" => new ProfessionalChatTypeStrategy(_responseGenerator),
 			_ => throw new ArgumentException($"Unsupported chat room type: {chatRoomType}")
 		};
 	}

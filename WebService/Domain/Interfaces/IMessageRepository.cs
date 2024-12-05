@@ -4,17 +4,17 @@ namespace Domain.Interfaces;
 
 public interface IMessageRepository
 {
-	Task<IEnumerable<Message>> GetAllMessageAsync();
-
-	Task<Message?> GetMessageByIdAsync(string id);
+	Task<Message?> GetMessageByIdAsync(Guid id);
 
 	Task<IEnumerable<Message?>> GetMessagesByChatroomId(Guid id);
 
 	Task AddMessageAsync(Message chatRoom);
 
-	void UpdateMessage(Message chatRoom);
-
-	Task DeleteMessageAsync(int id);
+	Task DeleteMessageAsync(Guid id);
 
 	Task SaveChangesAsync();
+
+	Task UpdateMessage(Message message);
+
+	Task<IEnumerable<Message>> GetLastMessagesAsync(Guid chatRoomId, int count);
 }
