@@ -24,4 +24,41 @@ public class MessageDTOs
 		[Required]
 		public string ChatRoomId { get; set; }
 	}
+
+	public class MessageResponse
+	{
+		public Guid MessageId { get; set; }
+
+		public Guid ChatRoomId { get; set; }
+
+		public string Content { get; set; } = null!;
+
+		public string MessageType { get; set; } = null!;
+
+		public DateTime CreatedAt { get; set; }
+	}
+
+	public class CreateMessageResponse
+	{
+		public Guid MessageId { get; set; }
+
+		public Guid ChatRoomId { get; set; }
+
+		public string Content { get; set; } = null!;
+
+		public string MessageType { get; set; } = null!;
+
+		public DateTime CreatedAt { get; set; }
+	}
+
+	public class EditMessageResponse
+	{
+		public Guid MessageId { get; set; }
+
+		public Guid ChatRoomId { get; set; }
+
+		public string Content { get; set; } = null!;
+
+		public DateTime UpdatedAt { get; set; }
+	}
 }

@@ -4,6 +4,14 @@ namespace Domain.Entities;
 
 public class ChatRoom
 {
+	public Guid ChatRoomId { get; private set; }
+
+	public string UserId { get; private set; } = null!;
+
+	public string Name { get; private set; } = null!;
+
+	public string ChatRoomType { get; private set; } = null!;
+
 	public ChatRoom(string userId, string name, string chatRoomType)
 	{
 		UserId = userId;
@@ -19,30 +27,6 @@ public class ChatRoom
 		ChatRoomType = chatRoomType;
 	}
 
-	/// <summary>
-	/// The unique identifier for the chat room.
-	/// </summary>
-	public Guid ChatRoomId { get; set; }
-
-	/// <summary>
-	/// The unique identifier for the user who owns the chat room.
-	/// </summary>
-	public string UserId { get; set; } = null!;
-
-	/// <summary>
-	/// The name of the chat room.
-	/// </summary>
-	public string Name { get; set; } = null!;
-
-	/// <summary>
-	/// The type or category of the chat room (e.g., General, Topic-specific, etc.).
-	/// </summary>
-	public string ChatRoomType { get; set; } = null!;
-
-
-	/// <summary>
-	/// Business rule method
-	/// </summary>
 	public void ValidateOwnership(string userId)
 	{
 		if (UserId != userId)
@@ -55,5 +39,23 @@ public class ChatRoom
 		var output = new Message(ChatRoomId, nameof(MessageType.Output), response, DateTime.UtcNow);
 
 		return (input, output);
+	}
+
+	public void UpdateDetails(string? name, string? chatRoomType)
+	{
+		if (!string.IsNullOrWhiteSpace(name))
+			Name = name;
+
+		if (!string.IsNullOrWhiteSpace(chatRoomType))
+		{
+			if (Enum.TryParse(typeof(ChatRoomType), chatRoomType, true, out var parsedEnumValue))
+			{
+				ChatRoomType = parsedEnumValue.ToString()!;
+			}
+			else
+			{
+				throw new ArgumentException($"Invalid value for ChatRoom type: {chatRoomType} ");
+			}
+		}
 	}
 }

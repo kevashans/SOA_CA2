@@ -29,11 +29,11 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			var message = await _messageService.AddPrompt(chatRoomId, userId, request.Content);
+			var message = await _messageService.AddPrompt(chatRoomId, userId, request);
 
 			return Ok(new { Message = message.Content });
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}
@@ -56,7 +56,7 @@ public class MessagesController : ControllerBase
 
 			return Ok(new { Message = messages });
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}
@@ -79,7 +79,7 @@ public class MessagesController : ControllerBase
 
 			return Ok(new { Message = updatedMessage.Content });
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}
@@ -98,11 +98,11 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			await _messageService.DeleteMessage(messageId, userId ,request);
+			await _messageService.DeleteMessage(messageId, userId, request);
 
 			return Ok(new { Message = $"Message with ID {messageId} has been deleted" });
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}

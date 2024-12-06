@@ -39,7 +39,7 @@ public class SessionsController : ControllerBase
 				Context = session.Context
 			});
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}
@@ -68,7 +68,7 @@ public class SessionsController : ControllerBase
 
 			return Ok(new { Message = "Session ended successfully." });
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}
@@ -107,7 +107,7 @@ public class SessionsController : ControllerBase
 				Summary = session.Context
 			});
 		}
-		catch (UnauthorizedAccessException ex)
+		catch (UnauthorizedAccessException)
 		{
 			return Forbid();
 		}

@@ -15,4 +15,15 @@ public class SessionDto
 		[Required]
 		public string ChatRoomId { get; set; }
 	}
+
+	public class StartSessionResponse
+	{
+		public Guid SessionId { get; set; }
+
+		public DateTime StartTime { get; set; }
+
+		public string? Context { get; set; }
+	}
+
+
 }

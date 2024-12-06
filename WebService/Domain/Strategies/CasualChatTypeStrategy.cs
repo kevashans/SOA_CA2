@@ -12,11 +12,7 @@ public class CasualChatTypeStrategy : IChatTypeStrategy
 	{
 		_responseGenerator = responseGenerator;
 	}
-	/// <summary>
-	/// Return ChatGPT response in a casual context
-	/// </summary>
-	/// <param name="userMessage"></param>
-	/// <returns></returns>
+
 	public async Task<string> Respond(string userMessage)
 	{
 		return await _responseGenerator.GenerateResponseAsync(_systemPrompt,userMessage);
