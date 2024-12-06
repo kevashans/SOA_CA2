@@ -7,7 +7,7 @@ using static Domain.DTOs.MessageDTOs;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/ChatRooms/{chatRoomId}/Messages")]
 public class MessagesController : ControllerBase
 {
 	private readonly IMessageService _messageService;
@@ -20,7 +20,7 @@ public class MessagesController : ControllerBase
 	/// <summary>
 	/// Creates a new chat room
 	/// </summary>
-	[HttpPost("{chatRoomId}"), Authorize]
+	[HttpPost, Authorize]
 	public async Task<IActionResult> AddMessage([FromRoute] string chatRoomId, CreateMessageRequests request)
 	{
 		try
@@ -43,7 +43,7 @@ public class MessagesController : ControllerBase
 		}
 	}
 
-	[HttpGet("{chatRoomId}"), Authorize]
+	[HttpGet, Authorize]
 	public async Task<IActionResult> GetMessages([FromRoute] string chatRoomId)
 	{
 		try
@@ -67,7 +67,7 @@ public class MessagesController : ControllerBase
 	}
 
 	[HttpPut("{messageId}"), Authorize]
-	public async Task<IActionResult> EditMessage([FromRoute] string messageId, EditMessageRequest request)
+	public async Task<IActionResult> EditMessage([FromRoute] string chatRoomId, [FromRoute] string messageId, EditMessageRequest request)
 	{
 		try
 		{
@@ -75,7 +75,7 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			var updatedMessage = await _messageService.EditMessage(messageId, userId, request);
+			var updatedMessage = await _messageService.EditMessage(chatRoomId, messageId, userId, request);
 
 			return Ok(new { Message = updatedMessage.Content });
 		}
@@ -90,7 +90,7 @@ public class MessagesController : ControllerBase
 	}
 
 	[HttpDelete("{messageId}"), Authorize]
-	public async Task<IActionResult> DeleteMessage([FromRoute] string messageId, DeleteMessageRequest request)
+	public async Task<IActionResult> DeleteMessage([FromRoute] string chatRoomId, [FromRoute] string messageId)
 	{
 		try
 		{
@@ -98,7 +98,8 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			await _messageService.DeleteMessage(messageId, userId, request);
+
+			await _messageService.DeleteMessage(messageId, userId, chatRoomId);
 
 			return Ok(new { Message = $"Message with ID {messageId} has been deleted" });
 		}

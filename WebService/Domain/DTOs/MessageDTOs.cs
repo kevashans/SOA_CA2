@@ -13,16 +13,8 @@ public class MessageDTOs
 	public class EditMessageRequest
 	{
 		[Required]
-		public string ChatRoomId { get; set; }
-
-		[Required]
 		[StringLength(1000, ErrorMessage = "Message content cannot exceed 1000 characters.")]
 		public string NewContent { get; set; }
-	}
-	public class DeleteMessageRequest
-	{
-		[Required]
-		public string ChatRoomId { get; set; }
 	}
 
 	public class MessageResponse

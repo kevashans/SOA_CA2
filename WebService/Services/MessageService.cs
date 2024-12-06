@@ -60,10 +60,10 @@ public class MessageService : IMessageService
 
 		// Update session summary
 		var lastMessages = await _messageRepository.GetLastMessagesAsync(chatRoomGuid, 10);
-		var updatedSummary = await GenerateSummaryFromMessages(chatStrategy,lastMessages, session?.Context); 
+		var updatedSummary = await GenerateSummaryFromMessages(chatStrategy, lastMessages, session?.Context);
 
 		if (session != null)
-		await _sessionManagementService.UpdateSessionSummary(session.SessionId, updatedSummary);
+			await _sessionManagementService.UpdateSessionSummary(session.SessionId, updatedSummary);
 
 		return new CreateMessageResponse
 		{
@@ -108,10 +108,10 @@ public class MessageService : IMessageService
 	/// <param name="request">Request containing the updated content of the message</param>
 	/// <returns>Updated version of the message</returns>
 	/// <exception cref="KeyNotFoundException">If the message with the specific identifier is not found</exception>
-	public async Task<EditMessageResponse> EditMessage(string messageId, string userId, EditMessageRequest request)
+	public async Task<EditMessageResponse> EditMessage(string chatRoomId, string messageId, string userId, EditMessageRequest request)
 	{
 		// Validate ChatRoom
-		var chatRoomGuid = GetGuid(request.ChatRoomId);
+		var chatRoomGuid = GetGuid(chatRoomId);
 		await ValidateChatRoom(chatRoomGuid, userId);
 
 		// Validate Message
@@ -136,10 +136,10 @@ public class MessageService : IMessageService
 	/// <param name="userId">unique identifier of the user attempting to delete the message</param>
 	/// <param name="request">request containing the chatroom to be deleted</param>
 	/// <exception cref="KeyNotFoundException">If chatroom with the specific identifier is not found</exception>
-	public async Task DeleteMessage(string messageId, string userId, DeleteMessageRequest request)
+	public async Task DeleteMessage(string messageId, string userId, string chatRoomId)
 	{
 		// Validate ChatRoom
-		var chatRoomGuid = GetGuid(request.ChatRoomId);
+		var chatRoomGuid = GetGuid(chatRoomId);
 		await ValidateChatRoom(chatRoomGuid, userId);
 
 		// Validate Message
@@ -177,7 +177,7 @@ public class MessageService : IMessageService
 		return guid;
 	}
 
-	private async Task ValidateChatRoom(Guid chatRoomGuid, string userId) 
+	private async Task ValidateChatRoom(Guid chatRoomGuid, string userId)
 	{
 		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid) ?? throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
 		chatRoom.ValidateOwnership(userId);

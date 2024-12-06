@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Services.Interfaces;
+using static Domain.DTOs.SessionDto;
 
 namespace Services;
 /// <summary>
@@ -25,7 +26,7 @@ public class SessionManagementService : ISessionManagementService
 	/// <param name="userId">The identifier of the user starting the session</param>
 	/// <returns>the newly created session or the laready active session</returns>
 	/// <exception cref="KeyNotFoundException">if the chatroom with the unique identifier is not found</exception>
-	public async Task<Session> StartSession(string chatRoomId, string userId)
+	public async Task<StartSessionResponse> StartSession(string chatRoomId, string userId)
 	{
 		var chatRoomGuid = GetGuid(chatRoomId);
 
@@ -38,7 +39,12 @@ public class SessionManagementService : ISessionManagementService
 		// Get active session if available
 		var activeSession = await _sessionRepository.GetActiveSessionAsync(chatRoomGuid);
 		if (activeSession != null)
-			return activeSession;
+			return new StartSessionResponse
+			{
+				SessionId = activeSession.SessionId,
+				StartTime = activeSession.StartTime,
+				Context = activeSession.Context
+			};
 
 		// Get the most recent session for the chatroom
 		var lastSession = await _sessionRepository.GetMostRecentSessionAsync(chatRoomGuid);
@@ -49,7 +55,12 @@ public class SessionManagementService : ISessionManagementService
 		await _sessionRepository.AddSessionAsync(newSession);
 		await _sessionRepository.SaveChangesAsync();
 
-		return newSession;
+		return new StartSessionResponse
+		{
+			SessionId = newSession.SessionId,
+			StartTime = newSession.StartTime,
+			Context = newSession.Context
+		};
 	}
 
 	/// <summary>
@@ -59,15 +70,22 @@ public class SessionManagementService : ISessionManagementService
 	/// <param name="chatRoomId">the unique identifier of the chatroom where the session is supposed to be ended</param>
 	/// <param name="userId">the unique identifier of the user ending the session</param>
 	/// <returns></returns>
-	public async Task EndSession(string chatRoomId, string userId)
+	public async Task<EndSessionResponse?> EndSession(string chatRoomId, string userId)
 	{
 		var session = await GetSession(chatRoomId, userId);
 		if (session == null || session.EndTime is not null)
-			return;
+			throw new KeyNotFoundException($"No session to end for chatroom {chatRoomId} ");
 
 		session.End();
 
 		await _sessionRepository.UpdateSession(session);
+
+		return new EndSessionResponse
+		{
+			SessionId = session.SessionId,
+			EndTime = session.EndTime,
+			FinalContext = session.Context
+		};
 	}
 
 	public async Task UpdateSessionSummary(Guid sessionId, string updatedSummary)

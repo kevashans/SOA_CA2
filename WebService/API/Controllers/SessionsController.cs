@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System.Security.Claims;
-using static Domain.DTOs.SessionDto;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/sessions")]
+[Route("api/chatRooms/{chatRoomId}/sessions")]
 [Authorize]
 public class SessionsController : ControllerBase
 {
@@ -19,7 +18,7 @@ public class SessionsController : ControllerBase
 	}
 
 	[HttpPost("start")]
-	public async Task<IActionResult> StartSession([FromBody] StartSessionRequest request)
+	public async Task<IActionResult> StartSession([FromRoute] string chatRoomId)
 	{
 		try
 		{
@@ -30,14 +29,9 @@ public class SessionsController : ControllerBase
 				return Unauthorized();
 
 			// Start a session using the service
-			var session = await _sessionService.StartSession(request.ChatRoomId, userId);
+			var response = await _sessionService.StartSession(chatRoomId, userId);
 
-			return Ok(new
-			{
-				SessionId = session.SessionId,
-				StartTime = session.StartTime,
-				Context = session.Context
-			});
+			return Ok(response);
 		}
 		catch (UnauthorizedAccessException)
 		{
@@ -53,7 +47,7 @@ public class SessionsController : ControllerBase
 	/// Ends an active session.
 	/// </summary>
 	[HttpPost("end")]
-	public async Task<IActionResult> EndSession([FromBody] EndSessionRequest request)
+	public async Task<IActionResult> EndSession([FromRoute] string chatRoomId)
 	{
 		try
 		{
@@ -64,9 +58,9 @@ public class SessionsController : ControllerBase
 				return Unauthorized();
 
 			// End the session using the service
-			await _sessionService.EndSession(request.ChatRoomId, userId);
+			var response = await _sessionService.EndSession(chatRoomId, userId);
 
-			return Ok(new { Message = "Session ended successfully." });
+			return Ok(response);
 		}
 		catch (UnauthorizedAccessException)
 		{
@@ -82,7 +76,7 @@ public class SessionsController : ControllerBase
 	/// <summary>
 	/// Fetches details of an active session or the most recent session.
 	/// </summary>
-	[HttpGet("{chatRoomId}")]
+	[HttpGet]
 	public async Task<IActionResult> GetSession([FromRoute] string chatRoomId)
 	{
 		try
@@ -96,16 +90,7 @@ public class SessionsController : ControllerBase
 			// Fetch the session details
 			var session = await _sessionService.GetSession(chatRoomId, userId);
 
-			if (session == null)
-				return NotFound(new { Error = "No session found." });
-
-			return Ok(new
-			{
-				SessionId = session.SessionId,
-				StartTime = session.StartTime,
-				EndTime = session.EndTime,
-				Summary = session.Context
-			});
+			return Ok(session);
 		}
 		catch (UnauthorizedAccessException)
 		{
