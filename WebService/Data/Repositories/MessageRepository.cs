@@ -63,15 +63,7 @@ public class MessageRepository : IMessageRepository
 
 		if (trackedEntity != null)
 		{
-			// update tracked entity
 			trackedEntity.Content = message.Content;
-		}
-		else
-		{
-			// attach entity for persistence
-			var entity = MapToDataEntity(message);
-			_context.Messages.Attach(entity);
-			_context.Entry(entity).State = EntityState.Modified;
 		}
 
 		await _context.SaveChangesAsync();

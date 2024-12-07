@@ -25,7 +25,6 @@ public class SessionManagementServiceTests
 	[Fact]
 	public async Task StartSession_ShouldCreateNewSession_WhenNoActiveSessionExists()
 	{
-		// Arrange
 		var chatRoomId = Guid.NewGuid();
 		var userId = "user123";
 		var chatRoom = new ChatRoom(chatRoomId, userId, "General Chat", "Casual");
@@ -56,7 +55,6 @@ public class SessionManagementServiceTests
 	[Fact]
 	public async Task StartSession_ShouldReturnActiveSession_WhenActiveSessionExists()
 	{
-		// Arrange
 		var chatRoomId = Guid.NewGuid();
 		var userId = "user123";
 		var activeSession = new Session(chatRoomId, DateTime.UtcNow, null, "Active Context");

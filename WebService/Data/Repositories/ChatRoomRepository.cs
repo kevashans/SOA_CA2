@@ -53,16 +53,8 @@ public class ChatRoomRepository : IChatRoomRepository
 
 		if (trackedEntity != null)
 		{
-			// update tracked entity
 			trackedEntity.Name = chatRoom.Name;
 			trackedEntity.ChatRoomType = chatRoom.ChatRoomType;
-		}
-		else
-		{
-			// attach entity for persistence
-			var entity = MapToDataEntity(chatRoom);
-			_context.ChatRooms.Attach(entity);
-			_context.Entry(entity).State = EntityState.Modified;
 		}
 
 		await _context.SaveChangesAsync();
