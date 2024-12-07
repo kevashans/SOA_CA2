@@ -44,6 +44,7 @@ const registerUser = async (formData: FormData): Promise<Session> => {
     return {
       user: {
         email: email,
+        id: data.accessToken,
         image: '',
       },
     };

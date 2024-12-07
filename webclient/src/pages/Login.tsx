@@ -40,7 +40,8 @@ const loginUser = async (formData: FormData): Promise<Session> => {
     // Return the user session data
     return {
       user: {
-        email: email,
+            email: email,
+            id: data.accessToken,
         image: '',
       },
     };
