@@ -1,24 +1,24 @@
 import * as React from 'react';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ChatIcon from '@mui/icons-material/Chat';
 import { AppProvider } from '@toolpad/core/react-router-dom';
 import { useNavigate , Outlet } from "react-router-dom";
 import type { Navigation, Session } from '@toolpad/core';
 import { SessionContext } from './SessionContext';
+import AddIcon from '@mui/icons-material/Add';
 
 const NAVIGATION: Navigation = [
   {
     kind: 'header',
-    title: 'Main items',
+    title: 'Chatrooms',
   },
   {
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
+    title: 'Add Room',
+    icon: <AddIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'chatroom',
+    title: 'Chatroom',
+    icon: <ChatIcon />,
   },
 ];
 
