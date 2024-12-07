@@ -40,7 +40,7 @@ public class ChatRoomService : IChatRoomService
 			Name = chatRoom.Name,
 			ChatRoomType = chatRoom.ChatRoomType,
 			UserId = chatRoom.UserId
-		}; 
+		};
 	}
 
 	/// <summary>
