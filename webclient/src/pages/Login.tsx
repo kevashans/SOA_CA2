@@ -11,7 +11,7 @@ const storeToken = (accessToken : string, refreshToken : string) => {
   localStorage.setItem('refreshToken', refreshToken); // Store the refresh token (if needed)
 };
 
-const registerUser = async (formData: FormData): Promise<Session> => {
+const loginUser = async (formData: FormData): Promise<Session> => {
   const email = formData.get('email') as string;
   const password  = formData.get('password') as string;
 
@@ -25,9 +25,6 @@ const registerUser = async (formData: FormData): Promise<Session> => {
   }
 
   try {
-    // Register the user first
-    await userRegister(email, password);
-
     // Now, log in the user
     const response = await userLogin(email, password);
     if (!response.ok) {
@@ -52,27 +49,32 @@ const registerUser = async (formData: FormData): Promise<Session> => {
   }
 };
 
-
-const loginLink = () => {
-  return <Link to={"/login"}>Login</Link>
-}
-
-
-export const SignIn = () => {
+export const Login = () => {
   const { setSession } = useSession();
   const navigate = useNavigate();
 
-  return (
-    <SignInPage
-      slots={{
-        signUpLink:loginLink
-      }}
+    function Title() {
+  return <h2 style={{ marginBottom: 8 }}>Login To Chatbox</h2>;
+    }
+    
+    
 
+const SignUpLink = () => {
+    return <Link to={"/sign-in"}>Login</Link>
+  }
+  
+
+  return (
+      <SignInPage
+      slots={{
+        title: Title,
+        signUpLink: SignUpLink,
+      }}
       providers={[{ id: 'credentials', name: 'Credentials' }]}
       signIn={async (provider, formData, callbackUrl) => {
         try {
           // Call the actual API to register and log in the user
-          const session = await registerUser(formData);
+          const session = await loginUser(formData);
 
           // Store session data in context
           setSession(session);
