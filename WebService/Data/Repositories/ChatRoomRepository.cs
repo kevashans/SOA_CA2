@@ -1,5 +1,4 @@
-﻿using Data;
-using Data.Entities;
+﻿using Data.Entities;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;

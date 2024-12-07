@@ -12,6 +12,7 @@ public class ChatStrategyFactory : IChatStrategyFactory
 	{
 		_responseGenerator = responseGenerator;
 	}
+
 	public IChatTypeStrategy GetChatStrategy(string chatRoomType)
 	{
 		return chatRoomType.ToLower() switch
