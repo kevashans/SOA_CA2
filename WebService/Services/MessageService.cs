@@ -1,5 +1,4 @@
-﻿using Domain.DTOs;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Factories.Interfaces;
 using Domain.Interfaces;
 using Domain.Strategies.Interfaces;
@@ -39,7 +38,7 @@ public class MessageService : IMessageService
 	{
 		// Validate ChatRoom
 		var chatRoomGuid = GetGuid(chatRoomId);
-		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid) ?? throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
+		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid) ?? throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} was not found");
 		chatRoom.ValidateOwnership(userId);
 
 		// Get active Session or most recent
@@ -179,7 +178,7 @@ public class MessageService : IMessageService
 
 	private async Task ValidateChatRoom(Guid chatRoomGuid, string userId)
 	{
-		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid) ?? throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
+		var chatRoom = await _chatroomRepository.GetChatRoomByIdAsync(chatRoomGuid) ?? throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found ");
 		chatRoom.ValidateOwnership(userId);
 	}
 }
