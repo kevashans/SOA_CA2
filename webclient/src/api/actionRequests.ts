@@ -61,3 +61,18 @@ export const sendUserMessage = async (chatRoomId: string, accessToken: string, m
     return response;
   }
   
+
+export const deleteChatRoom = async (chatRoomId: string, accessToken: string) => {
+
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ChatRooms/${chatRoomId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`, // Add the Authorization header with the Bearer token
+        },
+      });
+    
+      return response;
+
+
+};

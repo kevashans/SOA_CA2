@@ -87,7 +87,7 @@ export default function App() {
 
   {/* Protected Routes */}
   <Route path="/" element={<Layout />}>
-    <Route path="add-room" element={<AddChatroomPage addChatRoom={addChatRoom} />} />
+            <Route path="add-room" element={<AddChatroomPage addChatRoom={addChatRoom} chatRooms={chatRooms} setChatRooms={setChatRooms} />} />
     {chatRooms.map((room, index) => (
       <Route
         key={index}

@@ -130,7 +130,7 @@ const Chatroom = (props: { chatroomId: string; }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: 'auto', display: 'flex', flexDirection: 'column', height: '80vh' }}>
+    <Box sx={{  margin: 'auto', display: 'flex', flexDirection: 'column', height: '80vh' }}>
       {/* Chat messages display */}
       <Paper sx={{ flex: 1, overflowY: 'auto', padding: 2, maxHeight: '100%', marginBottom: 2 }}>
         <Stack spacing={2}>
