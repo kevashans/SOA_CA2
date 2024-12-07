@@ -18,11 +18,11 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
-            path: '/',
+            path: '/add-room',
             Component: AddChatroomPage,
           },
           {
-            path: '/chatroom',
+            path: '/chatroom/:chatRoomId', // Use dynamic parameter here
             Component: Chatroom,
           },
         ],

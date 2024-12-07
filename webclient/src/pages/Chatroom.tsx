@@ -23,10 +23,12 @@ const getChatRoomMessages = async (accessToken: string, chatRoomId: string) => {
   return response;
 };
 
-const Chatroom = () => {
+const Chatroom = (props: { chatroomId: string; }) => {
+    
+    const {chatroomId} = props
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState<string>('');
-  const [chatRoomId, setChatRoomId] = useState<string | null>(null); // State for storing chatRoomId
 
   // Fetch chat room on component load
   useEffect(() => {
@@ -40,16 +42,9 @@ const Chatroom = () => {
     const fetchChatRoom = async () => {
       try {
         // Fetch chat room data (assuming getChatRoom is a function that fetches the chat room details)
-        const response = await getChatRooms(accessToken); 
-        if (!response.ok) {
-          throw new Error('Failed to fetch chat room');
-        }
 
-        const data = await response.json();
-        if (data.chatRooms && data.chatRooms.length > 0) {
-          setChatRoomId(data.chatRooms[0].chatRoomId); // Store chat room ID in state
-          startChatRoomSession(data.chatRooms[0].chatRoomId, accessToken);
-        }
+         await startChatRoomSession(chatroomId, accessToken);
+        
       } catch (error) {
         console.error('Error fetching chat room:', error);
       }
@@ -60,7 +55,7 @@ const Chatroom = () => {
 
   // Fetch messages after chat room session is started
   useEffect(() => {
-    if (chatRoomId) {
+    if (chatroomId) {
       const accessToken = localStorage.getItem('accessToken'); // Get accessToken from localStorage
 
       if (!accessToken) {
@@ -70,7 +65,7 @@ const Chatroom = () => {
 
       const fetchMessages = async () => {
         try {
-          const response = await getChatRoomMessages(accessToken, chatRoomId);
+          const response = await getChatRoomMessages(accessToken, chatroomId);
           if (!response.ok) {
             throw new Error('Failed to fetch chat room messages');
           }
@@ -84,13 +79,13 @@ const Chatroom = () => {
 
       fetchMessages();
     }
-  }, [chatRoomId]); // Dependency on chatRoomId ensures it runs when the chat room is set
+  }, [chatroomId]); // Dependency on chatRoomId ensures it runs when the chat room is set
 
   const handleSend = async () => {
     if (inputText.trim()) {
       const newMessage: Message = {
         messageId: Date.now().toString(), 
-        chatRoomId: chatRoomId!,
+        chatRoomId: chatroomId!,
         content: inputText, 
         messageType: 'Input', 
         createdAt: new Date().toISOString(),
@@ -107,12 +102,12 @@ const Chatroom = () => {
       }
 
       // Send the user message
-      await sendUserMessage(chatRoomId, accessToken, inputText);
+      await sendUserMessage(chatroomId, accessToken, inputText);
 
       // Fetch updated messages after sending the user message
       const fetchUpdatedMessages = async () => {
         try {
-          const response = await getChatRoomMessages(accessToken, chatRoomId);
+          const response = await getChatRoomMessages(accessToken, chatroomId);
           if (!response.ok) {
             throw new Error('Failed to fetch updated messages');
           }
