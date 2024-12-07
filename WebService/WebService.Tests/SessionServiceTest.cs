@@ -43,10 +43,8 @@ public class SessionManagementServiceTests
 			.Setup(repo => repo.GetMostRecentSessionAsync(chatRoomId))
 			.ReturnsAsync(previousSession);
 
-		// Act
 		var session = await _sessionService.StartSession(chatRoomId.ToString(), userId);
 
-		// Assert
 		_sessionRepository.Verify(repo => repo.AddSessionAsync(It.IsAny<Session>()), Times.Once);
 		_sessionRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once);
 
@@ -72,10 +70,8 @@ public class SessionManagementServiceTests
 			.Setup(repo => repo.GetActiveSessionAsync(chatRoomId))
 			.ReturnsAsync(activeSession);
 
-		// Act
 		var session = await _sessionService.StartSession(chatRoomId.ToString(), userId);
 
-		// Assert
 		_sessionRepository.Verify(repo => repo.AddSessionAsync(It.IsAny<Session>()), Times.Never);
 		Assert.NotNull(session);
 		Assert.True(session.StartTime > DateTime.MinValue);
@@ -122,7 +118,6 @@ public class SessionManagementServiceTests
 	[Fact]
 	public async Task GetSession_ShouldReturnActiveSession_WhenActiveSessionExists()
 	{
-		// Arrange
 		var chatRoomId = Guid.NewGuid();
 		var userId = "user123";
 		var activeSession = new Session(chatRoomId, DateTime.UtcNow, null, "Active Context");

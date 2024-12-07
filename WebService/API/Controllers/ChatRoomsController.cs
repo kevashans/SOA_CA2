@@ -17,9 +17,6 @@ public class ChatRoomsController : ControllerBase
 		_chatRoomService = chatRoomService;
 	}
 
-	/// <summary>
-	/// Creates a new chat room
-	/// </summary>
 	[HttpPost, Authorize]
 	public async Task<IActionResult> CreateChatRoom(CreateChatRoomRequest dto)
 	{
@@ -43,9 +40,6 @@ public class ChatRoomsController : ControllerBase
 		}
 	}
 
-	/// <summary>
-	/// Updates an existing chat room
-	/// </summary>
 	[HttpPut("{chatRoomId}"), Authorize]
 	public async Task<IActionResult> UpdateChatRoom([FromRoute] string chatRoomId, UpdateChatRoomRequest dto)
 	{
@@ -69,9 +63,6 @@ public class ChatRoomsController : ControllerBase
 		}
 	}
 
-	/// <summary>
-	/// Retrieves chat rooms which is created by a specific user
-	/// </summary>
 	[HttpGet, Authorize]
 	public async Task<IActionResult> GetChatRoomByUserId()
 	{

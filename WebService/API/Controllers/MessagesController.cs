@@ -17,9 +17,6 @@ public class MessagesController : ControllerBase
 		_messageService = messageService;
 	}
 
-	/// <summary>
-	/// Creates a new chat room
-	/// </summary>
 	[HttpPost, Authorize]
 	public async Task<IActionResult> AddMessage([FromRoute] string chatRoomId, CreateMessageRequests request)
 	{

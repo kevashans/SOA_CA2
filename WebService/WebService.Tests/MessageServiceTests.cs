@@ -118,7 +118,6 @@ public class MessageServiceTests
 	[Fact]
 	public async Task DeleteMessage_ShouldDeleteMessageSuccessfully()
 	{
-		// Arrange
 		var messageId = Guid.NewGuid();
 		var userId = "user123";
 		var chatRoomId = Guid.NewGuid();

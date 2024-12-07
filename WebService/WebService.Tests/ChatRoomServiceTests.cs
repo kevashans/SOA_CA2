@@ -99,13 +99,17 @@ namespace WebService.Tests
 		[Fact]
 		public async Task DeleteChatRoomById_ShouldCallRepositoryDelete()
 		{
-			// Arrange
 			var chatRoomId = Guid.NewGuid();
 			var userId = "user123";
 			var chatRoom = new ChatRoom(chatRoomId, userId, "Chat 1", "Casual");
 
-			_chatRoomRepositoryMock.Setup(r => r.GetChatRoomByIdAsync(chatRoomId)).ReturnsAsync(chatRoom);
-			_chatRoomRepositoryMock.Setup(r => r.DeleteChatRoomAsync(chatRoomId)).Returns(Task.CompletedTask);
+			_chatRoomRepositoryMock
+				.Setup(r => r.GetChatRoomByIdAsync(chatRoomId))
+				.ReturnsAsync(chatRoom);
+
+			_chatRoomRepositoryMock
+				.Setup(r => r.DeleteChatRoomAsync(chatRoomId))
+				.Returns(Task.CompletedTask);
 
 			await _chatRoomService.DeleteChatRoomById(chatRoomId.ToString(), userId);
 
