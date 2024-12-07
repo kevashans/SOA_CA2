@@ -6,6 +6,9 @@ using Services.Interfaces;
 
 namespace Services;
 
+/// <summary>
+/// Service that deals with chatroom related functionalities
+/// </summary>
 public class ChatRoomService : IChatRoomService
 {
 	private readonly IChatRoomFactory _factory;
@@ -17,60 +20,97 @@ public class ChatRoomService : IChatRoomService
 		_repository = repository;
 	}
 
-	public async Task<ChatRoom> CreateChatRoom(CreateChatRoomRequest chatroomRequest, string userId)
+	/// <summary>
+	/// Creates a new ChatRoom for a specified user
+	/// </summary>
+	/// <param name="chatroomRequest">details of the chatroom to create</param>
+	/// <param name="userId">the identifier of the user creating the chatroom</param>
+	/// <returns>return the created chatroom</returns>
+	public async Task<CreateChatRoomResponse> CreateChatRoom(CreateChatRoomRequest chatroomRequest, string userId)
 	{
-		if (string.IsNullOrWhiteSpace(userId))
-			throw new ArgumentException("User ID cannot be null or empty.", nameof(userId));
-
 		// Use the factory to create the ChatRoom entity
 		var chatRoom = _factory.CreateChatRoom(chatroomRequest, userId);
 
 		// Save the ChatRoom using the repository
 		await _repository.AddChatRoomAsync(chatRoom);
 		await _repository.SaveChangesAsync();
-		return chatRoom;
+		return new CreateChatRoomResponse
+		{
+			ChatRoomId = chatRoom.ChatRoomId,
+			Name = chatRoom.Name,
+			ChatRoomType = chatRoom.ChatRoomType,
+			UserId = chatRoom.UserId
+		};
 	}
 
-	public async Task<IEnumerable<ChatRoom>> GetChatRoomByUserId(string userId)
+	/// <summary>
+	/// Retrieves all chatroom owned by a specified user
+	/// </summary>
+	/// <param name="userId">The identifier of the user whose chatrooms is supposed to be retrieved</param>
+	/// <returns>a collection of chatrooms</returns>
+	public async Task<IEnumerable<ChatRoomResponse>> GetChatRoomByUserId(string userId)
 	{
-		if (string.IsNullOrWhiteSpace(userId))
-			throw new ArgumentException("User ID cannot be null or empty.", nameof(userId));
-
 		var chatRooms = await _repository.GetChatRoomsByUserIdAsync(userId);
 
-		return chatRooms;
+		return chatRooms.Select(chatRoom => new ChatRoomResponse
+		{
+			ChatRoomId = chatRoom.ChatRoomId,
+			Name = chatRoom.Name,
+			ChatRoomType = chatRoom.ChatRoomType,
+			UserId = chatRoom.UserId
+		});
 	}
 
-	public async Task<ChatRoom> UpdateChatRoom(UpdateChatRoomRequest updateChatRoomRequest, string userId)
+	/// <summary>
+	/// Update details of an existing chatroom
+	/// </summary>
+	/// <param name="chatRoomId">Identifier of the chatroom to be updated</param>
+	/// <param name="updateChatRoomRequest">Request containing the new details of the chatroom</param>
+	/// <param name="userId">Identifier of the user trying to update the chatroom</param>
+	/// <returns>Updated chatroom entity</returns>
+	/// <exception cref="ArgumentException">thrown if chatrrom id is not a valid uuid format</exception>
+	/// <exception cref="KeyNotFoundException">If chatroom with specified ID doesnt exist</exception>
+	/// <exception cref="UnauthorizedAccessException">Thrown if user is not the owner of the chatroom</exception>
+	public async Task<UpdateChatRoomResponse> UpdateChatRoom(string chatRoomId, UpdateChatRoomRequest updateChatRoomRequest, string userId)
 	{
-		if (!Guid.TryParse(updateChatRoomRequest.ChatRoomId, out Guid chatRoomGuid))
+		if (!Guid.TryParse(chatRoomId, out Guid chatRoomGuid))
 			throw new ArgumentException("Invalid ChatRoom ID format.");
 
 		var existingChatRoom = await _repository.GetChatRoomByIdAsync(chatRoomGuid);
 
 		if (existingChatRoom == null)
-			throw new KeyNotFoundException($"ChatRoom with ID {updateChatRoomRequest.ChatRoomId} not found.");
+			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomId} not found.");
 
-		existingChatRoom.Name = updateChatRoomRequest.Name ?? existingChatRoom.Name;
-		existingChatRoom.ChatRoomType = updateChatRoomRequest.ChatRoomType ?? existingChatRoom.ChatRoomType;
+		existingChatRoom.ValidateOwnership(userId);
+
+		existingChatRoom.UpdateDetails(updateChatRoomRequest.Name, updateChatRoomRequest.ChatRoomType);
 
 		await _repository.SaveAsync(existingChatRoom);
-		return existingChatRoom;
+		return new UpdateChatRoomResponse
+		{
+			ChatRoomId = existingChatRoom.ChatRoomId,
+			Name = existingChatRoom.Name,
+			ChatRoomType = existingChatRoom.ChatRoomType,
+		};
 	}
+
+	/// <summary>
+	/// Delete chatroom by unique id
+	/// </summary>
+	/// <param name="chatRoomId"> The unique identifier of the chatroom to be deleted</param>
+	/// <param name="userId">The unique identifier of the user trying to delete the chatroom</param>
+	/// <exception cref="ArgumentException">thrown if chatRoomId is not a valid GUID format</exception>
+	/// <exception cref="KeyNotFoundException">thrown if the chat room with specified id does not exist</exception>
+	/// <exception cref="UnauthorizedAccessException">Thrown if user is not the owner of the chatroom</exception>
 
 	public async Task DeleteChatRoomById(string chatRoomId, string userId)
 	{
 		if (!Guid.TryParse(chatRoomId, out Guid chatRoomGuid))
 			throw new ArgumentException("Invalid ChatRoom ID format.");
 
-		var chatRoom = await _repository.GetChatRoomByIdAsync(chatRoomGuid);
+		var chatRoom = await _repository.GetChatRoomByIdAsync(chatRoomGuid) ?? throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
 
-		if (chatRoom == null)
-			throw new KeyNotFoundException($"ChatRoom with ID {chatRoomGuid} not found");
-
-		if (chatRoom.UserId != userId)
-			throw new UnauthorizedAccessException("You are not authorized to delete this chat room.");
-
+		chatRoom.ValidateOwnership(userId);
 
 		await _repository.DeleteChatRoomAsync(chatRoomGuid);
 		await _repository.SaveChangesAsync();

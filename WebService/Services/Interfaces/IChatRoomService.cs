@@ -4,12 +4,11 @@ using Domain.Entities;
 namespace Services.Interfaces;
 public interface IChatRoomService
 {
-	Task<ChatRoom> CreateChatRoom(CreateChatRoomRequest chatroomRequest, string userId);
+	Task<CreateChatRoomResponse> CreateChatRoom(CreateChatRoomRequest chatroomRequest, string userId);
 
-	Task<ChatRoom> UpdateChatRoom(UpdateChatRoomRequest updateChatRoomRequest, string userId);
+	Task<UpdateChatRoomResponse> UpdateChatRoom(string chatRoomId, UpdateChatRoomRequest updateChatRoomRequest, string userId);
 
-	Task<IEnumerable<ChatRoom>> GetChatRoomByUserId(string userId);
+	Task<IEnumerable<ChatRoomResponse>> GetChatRoomByUserId(string userId);
 
 	Task DeleteChatRoomById(string chatRoomId, string userId);
-
 }

@@ -2,6 +2,16 @@
 
 public class Session
 {
+	public Guid SessionId { get; private set; }
+
+	public Guid ChatRoomId { get; private set; }
+
+	public DateTime StartTime { get; private set; }
+
+	public DateTime? EndTime { get; private set; }
+
+	public string Context { get; private set; } = null!;
+
 	public Session(Guid sessionId, Guid chatRoomId, DateTime startTime, DateTime? endTime, string context)
 	{
 		SessionId = sessionId;
@@ -19,13 +29,17 @@ public class Session
 		Context = context;
 	}
 
-	public Guid SessionId { get; set; }
+	public void End()
+	{
+		if (EndTime != null)
+			throw new InvalidOperationException("Session ended already.");
 
-	public Guid ChatRoomId { get; set; }
+		EndTime = DateTime.UtcNow;
+		Context += "\n[Session Ended]";
+	}
 
-	public DateTime StartTime { get; set; }
-
-	public DateTime? EndTime { get; set; }
-
-	public string Context { get; set; } = null!;
+	public void UpdateSummary(string updatedSummary)
+	{
+		Context = updatedSummary;
+	}
 }

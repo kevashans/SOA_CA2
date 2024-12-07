@@ -1,6 +1,5 @@
 ﻿using Domain.Strategies.Interfaces;
 
-
 namespace Domain.Strategies;
 
 internal class PirateChatTypeStrategy : IChatTypeStrategy

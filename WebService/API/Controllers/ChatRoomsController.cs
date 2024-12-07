@@ -1,24 +1,24 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System.Security.Claims;
-using static Domain.DTOs.MessageDTOs;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/ChatRooms/{chatRoomId}/Messages")]
-public class MessagesController : ControllerBase
+[Route("api/[controller]")]
+public class ChatRoomsController : ControllerBase
 {
-	private readonly IMessageService _messageService;
+	private readonly IChatRoomService _chatRoomService;
 
-	public MessagesController(IMessageService messageService)
+	public ChatRoomsController(IChatRoomService chatRoomService)
 	{
-		_messageService = messageService;
+		_chatRoomService = chatRoomService;
 	}
 
 	[HttpPost, Authorize]
-	public async Task<IActionResult> AddMessage([FromRoute] string chatRoomId, CreateMessageRequests request)
+	public async Task<IActionResult> CreateChatRoom(CreateChatRoomRequest dto)
 	{
 		try
 		{
@@ -26,9 +26,32 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			var message = await _messageService.AddPrompt(chatRoomId, userId, request);
+			var createdChatRoom = await _chatRoomService.CreateChatRoom(dto, userId);
 
-			return Ok(new { Message = message.Content });
+			return Ok(createdChatRoom);
+		}
+		catch (UnauthorizedAccessException)
+		{
+			return Forbid();
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(new { Error = ex.Message });
+		}
+	}
+
+	[HttpPut("{chatRoomId}"), Authorize]
+	public async Task<IActionResult> UpdateChatRoom([FromRoute] string chatRoomId, UpdateChatRoomRequest dto)
+	{
+		try
+		{
+			string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+			if (userId == null)
+				return Unauthorized();
+
+			var updatedChatRoom = await _chatRoomService.UpdateChatRoom(chatRoomId, dto, userId);
+
+			return Ok(updatedChatRoom);
 		}
 		catch (UnauthorizedAccessException)
 		{
@@ -41,7 +64,7 @@ public class MessagesController : ControllerBase
 	}
 
 	[HttpGet, Authorize]
-	public async Task<IActionResult> GetMessages([FromRoute] string chatRoomId)
+	public async Task<IActionResult> GetChatRoomByUserId()
 	{
 		try
 		{
@@ -49,9 +72,17 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			var messages = await _messageService.GetChatroomMessages(chatRoomId, userId);
+			var chatRooms = await _chatRoomService.GetChatRoomByUserId(userId);
 
-			return Ok(new { Message = messages });
+			var response = chatRooms.Select(chatRoom => new ChatRoomResponse
+			{
+				ChatRoomId = chatRoom.ChatRoomId,
+				Name = chatRoom.Name,
+				ChatRoomType = chatRoom.ChatRoomType,
+				UserId = chatRoom.UserId
+			});
+
+			return Ok(new { ChatRooms = chatRooms });
 		}
 		catch (UnauthorizedAccessException)
 		{
@@ -63,8 +94,8 @@ public class MessagesController : ControllerBase
 		}
 	}
 
-	[HttpPut("{messageId}"), Authorize]
-	public async Task<IActionResult> EditMessage([FromRoute] string chatRoomId, [FromRoute] string messageId, EditMessageRequest request)
+	[HttpDelete("{chatRoomId}"), Authorize]
+	public async Task<IActionResult> DeleteChatRoomById(string chatRoomId)
 	{
 		try
 		{
@@ -72,33 +103,9 @@ public class MessagesController : ControllerBase
 			if (userId == null)
 				return Unauthorized();
 
-			var updatedMessage = await _messageService.EditMessage(chatRoomId, messageId, userId, request);
+			await _chatRoomService.DeleteChatRoomById(chatRoomId, userId);
 
-			return Ok(new { Message = updatedMessage.Content });
-		}
-		catch (UnauthorizedAccessException)
-		{
-			return Forbid();
-		}
-		catch (Exception ex)
-		{
-			return BadRequest(new { Error = ex.Message });
-		}
-	}
-
-	[HttpDelete("{messageId}"), Authorize]
-	public async Task<IActionResult> DeleteMessage([FromRoute] string chatRoomId, [FromRoute] string messageId)
-	{
-		try
-		{
-			string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-			if (userId == null)
-				return Unauthorized();
-
-
-			await _messageService.DeleteMessage(messageId, userId, chatRoomId);
-
-			return Ok(new { Message = $"Message with ID {messageId} has been deleted" });
+			return Ok(new { Message = $"ChatRoom with ID {chatRoomId} has been deleted" });
 		}
 		catch (UnauthorizedAccessException)
 		{

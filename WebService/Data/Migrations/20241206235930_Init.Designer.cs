@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129111258_init")]
-    partial class init
+    [Migration("20241206235930_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,19 +134,17 @@ namespace Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
                         .HasColumnName("Content");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasMaxLength(100)
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");
 
                     b.Property<string>("MessageType")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("MessageType");
 
                     b.HasKey("MessageId");
@@ -169,11 +167,11 @@ namespace Data.Migrations
 
                     b.Property<string>("Context")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
                         .HasColumnName("Context");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasMaxLength(100)
                         .HasColumnType("datetime2")
                         .HasColumnName("EndTime");

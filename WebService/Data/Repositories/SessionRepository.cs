@@ -19,10 +19,6 @@ public class SessionRepository : ISessionRepository
 		await _context.AddAsync(MapToDataEntity(session));
 	}
 
-	public Task DeleteSessionAsync(int id)
-	{
-		throw new NotImplementedException();
-	}
 
 	public async Task<Session?> GetActiveSessionAsync(Guid chatRoomId)
 	{
@@ -32,10 +28,6 @@ public class SessionRepository : ISessionRepository
 		return session is not null ? MapToDomainEntity(session) : null;
 	}
 
-	public Task<IEnumerable<Session>> GetAllSessionAsync()
-	{
-		throw new NotImplementedException();
-	}
 
 	public async Task<Session?> GetMostRecentSessionAsync(Guid chatRoomId)
 	{
@@ -60,31 +52,15 @@ public class SessionRepository : ISessionRepository
 
 	public async Task UpdateSession(Session session)
 	{
-		try
-		{
-			var trackedEntity = _context.Sessions.Local.FirstOrDefault(s => s.SessionId == session.SessionId);
+		var trackedEntity = _context.Sessions.Local.FirstOrDefault(s => s.SessionId == session.SessionId);
 
-			if (trackedEntity != null)
-			{
-				// Update tracked entity
-				trackedEntity.Context = session.Context;
-				trackedEntity.EndTime = session.EndTime;
-			}
-			else
-			{
-				// Attach entity for persistence
-				var entity = MapToDataEntity(session);
-				_context.Sessions.Attach(entity);
-				_context.Entry(entity).State = EntityState.Modified;
-			}
-
-			await _context.SaveChangesAsync();
-		}
-		catch (DbUpdateException ex)
+		if (trackedEntity != null)
 		{
-			// Log or inspect the inner exception
-			throw new Exception("An error occurred while updating the session. See inner exception for details.", ex);
+			trackedEntity.Context = session.Context;
+			trackedEntity.EndTime = session.EndTime;
 		}
+
+		await _context.SaveChangesAsync();
 	}
 
 	private SessionEntity MapToDataEntity(Session session)
